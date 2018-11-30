@@ -1,0 +1,26 @@
+{
+  "name": "city-explorer",
+  "version": "1.0.0",
+  "description": "An app that lets you explorer a city without even visiting it! You find out about the weather, local cuisine, interesting local facts, and more!",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CClemensJr/city-explorer.git"
+  },
+  "author": "Charles Clemens",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CClemensJr/city-explorer/issues"
+  },
+  "homepage": "https://github.com/CClemensJr/city-explorer#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^6.1.0",
+    "express": "^4.16.4",
+    "superagent": "^4.0.0"
+  }
+}
