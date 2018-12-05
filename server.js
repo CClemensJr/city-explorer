@@ -16,20 +16,22 @@ app.use(cors());
 // Create routes
 app.get('/location', (req, res) => {
     const locationData = getLocation(req.query.data);
-    console.log(`In app.get, req.query.data = ${req.query.data}`);
     res.send(locationData);
 });
 
 
 // Helper Functions
 function getLocation(query) {
-    const URL = `https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=${process.env.LOCATION_API_KEY}`;
-    const geoData = require(query_string);
-    const location = new Location(geoData);
+    const _URL = `https://maps.googleapis.com/maps/api/geocode/json?address=${query}&key=${process.env.LOCATION_API_KEY}`;
 
-    location.search_query = query;
-    console.log(`Location.search_query = ${location.search_query}`);
-    return location;
+    return superagent.get(_URL)
+        .then(data => {
+            let location = new Location(data);
+            location.search_query = query;
+
+            return location;
+        })
+
 }
 
 // Constructors
