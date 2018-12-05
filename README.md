@@ -9,7 +9,7 @@ City Explorer allows users to simplify their travel plans by providing the user 
 ## Getting Started
 * Clone the repo.
 * Get the local server running.
-* Navigate to the City Explorer front end.
+* Navigate to the City Explorer front end [https://codefellows.github.io/city_explorer/].
 * Enter the url for the local host.
 * Search for a city.
 
