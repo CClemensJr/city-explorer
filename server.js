@@ -15,8 +15,10 @@ app.use(cors());
 
 // Create routes
 app.get('/location', (req, res) => {
-    const locationData = getLocation(req.query.data);
-    res.send(locationData);
+    getLocation(req.query.data)
+    .then(locationData => {
+        res.send(locationData);
+    });
 });
 
 
@@ -26,12 +28,11 @@ function getLocation(query) {
 
     return superagent.get(_URL)
         .then(data => {
-            let location = new Location(data);
+            let location = new Location(data.body.results[0]);
             location.search_query = query;
 
             return location;
-        })
-
+        });
 }
 
 // Constructors
