@@ -14,19 +14,14 @@ app.use(cors());
 
 
 // Routes
-app.get('/location', (req, res) => {
-    getLocation(req.query.data)
-    .then(locationData => {
-        res.send(locationData);
-    });
-});
-
+app.get('/location', getLocation);
 app.get('/weather', getWeather);
 
 
 
 // Helper Functions
-function getLocation(query) {
+function getLocation(req, res) {
+    let query = req.query.data;
     const _URL = `https://maps.googleapis.com/maps/api/geocode/json?address=${query}&key=${process.env.LOCATION_API_KEY}`;
 
     return superagent.get(_URL)
@@ -34,7 +29,7 @@ function getLocation(query) {
             let location = new Location(data.body.results[0]);
             location.search_query = query;
 
-            return location;
+            res.send(location);
         });
 }
 
