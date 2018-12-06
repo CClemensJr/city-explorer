@@ -51,6 +51,8 @@ function getWeather(req, res) {
         });
 }
 
+
+
 // Object Constructors
 function Location(data) {
     this.formatted_query = data.formatted_address;
@@ -63,5 +65,13 @@ function Weather(day) {
     this.time = new Date(day.time * 1000).toString().slice(0, 15);
 }
 
+
+
+// Error handlers
+function handleErrors(err, res) {
+    console.error('ERR', err);
+
+    if (res) res.status(500).send('Sorry, something went wrong.');
+}
 
 app.listen(PORT, () => console.log(`App is running on PORT: ${PORT}`));
