@@ -13,7 +13,7 @@ const app = express();
 app.use(cors());
 
 
-// Create routes
+// Routes
 app.get('/location', (req, res) => {
     getLocation(req.query.data)
     .then(locationData => {
@@ -40,6 +40,17 @@ function getLocation(query) {
 
             return location;
         });
+}
+
+function getWeather(query) {
+    const latitude = '37.8267';
+    const longitude = '-122.4233';
+    const _URL = `https://api.darksky.net/forecast/${process.env.WEATHER_API_KEY}/${latitude},${longitude}`;
+
+    return superagent.get(_URL);
+        // .then(data => {
+        //     let weather = new weather(data.body.results[0]);
+        // });
 }
 
 // Constructors
