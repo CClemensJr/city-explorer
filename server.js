@@ -13,6 +13,7 @@ const app = express();
 app.use(cors());
 
 
+
 // Routes
 app.get('/location', getLocation);
 app.get('/weather', getWeather);
@@ -30,7 +31,8 @@ function getLocation(req, res) {
             location.search_query = query;
 
             res.send(location);
-        });
+        })
+        .catch(error => handleError(error, res));
 }
 
 function getWeather(req, res) {
@@ -68,7 +70,7 @@ function Weather(day) {
 
 
 // Error handlers
-function handleErrors(err, res) {
+function handleError(err, res) {
     console.error('ERR', err);
 
     if (res) res.status(500).send('Sorry, something went wrong.');
