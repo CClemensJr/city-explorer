@@ -21,12 +21,8 @@ app.get('/location', (req, res) => {
     });
 });
 
-app.get('/weather', (req, res) => {
-    getWeather(req.query.data)
-    .then( weatherData => {
-        res.send(weatherData);
-    });
-});
+app.get('/weather', getWeather);
+
 
 
 // Helper Functions
@@ -42,18 +38,23 @@ function getLocation(query) {
         });
 }
 
-function getWeather(query) {
-    const latitude = '37.8267';
-    const longitude = '-122.4233';
+function getWeather(req, res) {
+    const latitude = req.query.data.latitude;
+    const longitude = req.query.data.longitude;
     const _URL = `https://api.darksky.net/forecast/${process.env.WEATHER_API_KEY}/${latitude},${longitude}`;
 
-    return superagent.get(_URL);
-        // .then(data => {
-        //     let weather = new weather(data.body.results[0]);
-        // });
+    return superagent.get(_URL)
+        .then(result => {
+            const weatherSummaries = [];
+
+            result.body.daily.data.forEach(day => {
+                const summary = new Weather(day)
+                weatherSummaries.push(summary);
+            });
+        });
 }
 
-// Constructors
+// Object Constructors
 function Location(data) {
     this.formatted_query = data.formatted_address;
     this.latitude = data.geometry.location.lat;
