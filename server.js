@@ -61,5 +61,10 @@ function Location(data) {
     this.longitude = data.geometry.location.lng;
 }
 
+function Weather(day) {
+    this.forecast = day.summary;
+    this.time = new Date(day.time * 1000).toString().slice(0, 15);
+}
+
 
 app.listen(PORT, () => console.log(`App is running on PORT: ${PORT}`));
