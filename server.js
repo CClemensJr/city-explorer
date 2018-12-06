@@ -21,6 +21,13 @@ app.get('/location', (req, res) => {
     });
 });
 
+app.get('/weather', (req, res) => {
+    getWeather(req.query.data)
+    .then( weatherData => {
+        res.send(weatherData);
+    });
+});
+
 
 // Helper Functions
 function getLocation(query) {
