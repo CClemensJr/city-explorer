@@ -51,6 +51,8 @@ function getWeather(req, res) {
                 const summary = new Weather(day)
                 weatherSummaries.push(summary);
             });
+
+            res.send(weatherSummaries);
         });
 }
 
