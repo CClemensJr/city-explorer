@@ -28,14 +28,9 @@ function getLocation(req, res, next) {
 
     return superagent.get(_URL)
         .then(data => {
-            if (!data.body.results.length) {
-                throw new Error('No Data');
-            } else {
-                let location = new Location(data.body.results[0]);
-                location.search_query = query;
+            if (!data.body.results.length) {throw new Error('No Data');}
     
-                res.send(location);
-            }
+            res.send(new Location(query, data.body.results[0]));
         })
         .catch(error => handleError(error, req, res, next));
 }
@@ -53,7 +48,8 @@ function getWeather(req, res, next) {
 
 
 // Object Constructors
-function Location(data) {
+function Location(query, data) {
+    this.search_query = query;
     this.formatted_query = data.formatted_address;
     this.latitude = data.geometry.location.lat;
     this.longitude = data.geometry.location.lng;
