@@ -51,14 +51,19 @@ function getWeather(req, res, next) {
 
     return superagent.get(_URL)
         .then(result => {
-            const weatherSummaries = [];
+            // const weatherSummaries = [];
 
-            result.body.daily.data.forEach(day => {
-                const summary = new Weather(day)
-                weatherSummaries.push(summary);
-            });
+            // result.body.daily.data.forEach(day => {
+            //     const summary = new Weather(day)
+            //     weatherSummaries.push(summary);
+            // });
 
-            res.send(weatherSummaries);
+            // res.send(weatherSummaries);
+
+            res.send(result.body.daily.data.map( day => {
+                return new Weather(day);
+                })
+            );
         })
         .catch(error => handleError(error, req, res, next));
 }
