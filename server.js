@@ -29,17 +29,13 @@ function getLocation(req, res, next) {
     return superagent.get(_URL)
         .then(data => {
             if (!data.body.results.length) {
-                console.log('In if');
                 throw new Error('No Data');
             } else {
-                console.log('In else');
                 let location = new Location(data.body.results[0]);
                 location.search_query = query;
     
                 res.send(location);
             }
-
-            console.log('Exiting then');
         })
         .catch(error => handleError(error, req, res, next));
 }
