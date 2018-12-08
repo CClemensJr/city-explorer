@@ -72,6 +72,19 @@ function Weather(day) {
     this.time = new Date(day.time * 1000).toString().slice(0, 15);
 }
 
+function Yelp(restaurant) {
+    //"name": "Pike Place Chowder",
+    // "image_url": "https://s3-media3.fl.yelpcdn.com/bphoto/ijju-wYoRAxWjHPTCxyQGQ/o.jpg",
+    // "price": "$$   ",
+    // "rating": "4.5",
+    // "url"
+    this.name;
+    this.image_url;
+    this.price;
+    this.rating;
+    this.url;
+}
+
 
 
 // Error handlers
