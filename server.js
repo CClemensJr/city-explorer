@@ -18,6 +18,7 @@ app.use(handleError);
 // Routes
 app.get('/location', getLocation);
 app.get('/weather', getWeather);
+app.get('/yelp', getYelp);
 
 
 
@@ -28,18 +29,9 @@ function getLocation(req, res, next) {
 
     return superagent.get(_URL)
         .then(data => {
-            if (!data.body.results.length) {
-                console.log('In if');
-                throw new Error('No Data');
-            } else {
-                console.log('In else');
-                let location = new Location(data.body.results[0]);
-                location.search_query = query;
+            if (!data.body.results.length) {throw new Error('No Data');}
     
-                res.send(location);
-            }
-
-            console.log('Exiting then');
+            res.send(new Location(query, data.body.results[0]));
         })
         .catch(error => handleError(error, req, res, next));
 }
@@ -54,10 +46,22 @@ function getWeather(req, res, next) {
         .catch(error => handleError(error, req, res, next));
 }
 
+function getYelp(req, res, next) {
+    let latitude = req.query.data.latitude;
+    let longitude = req.query.data.longitude;
+    const _URL = `https://api.yelp.com/v3/businesses/search?term=restaurants&latitude=${latitude}&longitude=${longitude}`;
+
+    return superagent.get(_URL)
+        .set('Authorization', `Bearer ${process.env.YELP_API_KEY}`)
+        .then(result => res.send(result.body.businesses.map(restaurant => new Yelp(restaurant))))
+        .catch(error => handleError(error, req, res, next));
+}
+
 
 
 // Object Constructors
-function Location(data) {
+function Location(query, data) {
+    this.search_query = query;
     this.formatted_query = data.formatted_address;
     this.latitude = data.geometry.location.lat;
     this.longitude = data.geometry.location.lng;
@@ -66,6 +70,14 @@ function Location(data) {
 function Weather(day) {
     this.forecast = day.summary;
     this.time = new Date(day.time * 1000).toString().slice(0, 15);
+}
+
+function Yelp(restaurant) {
+    this.name = restaurant.name;
+    this.image_url = restaurant.image_url;
+    this.price = restaurant.price;
+    this.rating = restaurant.rating;
+    this.url = restaurant.url;
 }
 
 
