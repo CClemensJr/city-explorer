@@ -53,7 +53,7 @@ function getYelp(req, res, next) {
 
     return superagent.get(_URL)
         .set('Authorization', `Bearer ${process.env.YELP_API_KEY}`)
-        .then(result => res.send(result.body.businesses.map(restaurant => new Yelp(restaurant))))//res.send(result.body.map(restaurant => new Yelp(restaurant))))
+        .then(result => res.send(result.body.businesses.map(restaurant => new Yelp(restaurant))))
         .catch(error => handleError(error, req, res, next));
 }
 
