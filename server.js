@@ -53,7 +53,7 @@ function getYelp(req, res, next) {
 
     return superagent.get(_URL)
         .set('Authorization', `Bearer ${process.env.YELP_API_KEY}`)
-        .then(result => res.send(result.body))
+        .then(result => res.send(result.body.businesses.map(restaurant => new Yelp(restaurant))))//res.send(result.body.map(restaurant => new Yelp(restaurant))))
         .catch(error => handleError(error, req, res, next));
 }
 
@@ -73,16 +73,11 @@ function Weather(day) {
 }
 
 function Yelp(restaurant) {
-    //"name": "Pike Place Chowder",
-    // "image_url": "https://s3-media3.fl.yelpcdn.com/bphoto/ijju-wYoRAxWjHPTCxyQGQ/o.jpg",
-    // "price": "$$   ",
-    // "rating": "4.5",
-    // "url"
-    this.name;
-    this.image_url;
-    this.price;
-    this.rating;
-    this.url;
+    this.name = restaurant.name;
+    this.image_url = restaurant.image_url;
+    this.price = restaurant.price;
+    this.rating = restaurant.rating;
+    this.url = restaurant.url;
 }
 
 
