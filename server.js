@@ -18,6 +18,7 @@ app.use(handleError);
 // Routes
 app.get('/location', getLocation);
 app.get('/weather', getWeather);
+app.get('/yelp', getYelp);
 
 
 
@@ -42,6 +43,17 @@ function getWeather(req, res, next) {
 
     return superagent.get(_URL)
         .then(result => res.send(result.body.daily.data.map(day => new Weather(day))))
+        .catch(error => handleError(error, req, res, next));
+}
+
+function getYelp(req, res, next) {
+    let latitude = req.query.data.latitude;
+    let longitude = req.query.data.longitude;
+    const _URL = `https://api.yelp.com/v3/businesses/search?term=restaurants&latitude=${latitude}&longitude=${longitude}`;
+
+    return superagent.get(_URL)
+        .set('Authorization', `Bearer ${process.env.YELP_API_KEY}`)
+        .then(result => res.send(result.body))
         .catch(error => handleError(error, req, res, next));
 }
 
