@@ -19,6 +19,7 @@ app.use(handleError);
 app.get('/location', getLocation);
 app.get('/weather', getWeather);
 app.get('/yelp', getYelp);
+app.get('/movies', getMovies);
 
 
 
@@ -55,6 +56,15 @@ function getYelp(req, res, next) {
         .set('Authorization', `Bearer ${process.env.YELP_API_KEY}`)
         .then(result => res.send(result.body.businesses.map(restaurant => new Yelp(restaurant))))
         .catch(error => handleError(error, req, res, next));
+}
+
+function getMovies(req, res, next) {
+    let searchTerm = req.data.name;
+    const _URL = `https://api.themoviedb.org/3/search/movie?${process.env.MOVIE_DB_API_KEY}&language=en-US&query=${searchTerm}&include_adult=false`;
+
+    return superagent.get(_URL)
+    
+
 }
 
 
