@@ -94,7 +94,7 @@ function Movie(movie) {
     this.title = movie.title;
     this.overview = movie.overview;
     this.average_votes = movie.average_votes;
-    this.image_url = movie.image_url;
+    this.image_url = `https://image.tmdb.org/t/p/original/${movie.poster_path}`;
     this.popularity = movie.popularity;
     this.releaseDate = movie.release_on;
 }
