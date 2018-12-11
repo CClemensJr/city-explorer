@@ -19,6 +19,7 @@ app.use(handleError);
 app.get('/location', getLocation);
 app.get('/weather', getWeather);
 app.get('/yelp', getYelp);
+app.get('/movies', getMovies);
 
 
 
@@ -57,6 +58,15 @@ function getYelp(req, res, next) {
         .catch(error => handleError(error, req, res, next));
 }
 
+function getMovies(req, res, next) {
+    let searchQuery = req.query.data.search_query.split(',')[0];
+    const _URL = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.MOVIE_DB_API_KEY}&language=en-US&query=${searchQuery}&include_adult=false&page=1`;
+
+    return superagent.get(_URL)
+        .then(result => res.send(result.body.results.map(movie => new Movie(movie))))//console.log(result.body.results[0].title))
+        .catch(error => handleError(error, req, res, next));
+}
+
 
 
 // Object Constructors
@@ -80,7 +90,14 @@ function Yelp(restaurant) {
     this.url = restaurant.url;
 }
 
-
+function Movie(movie) {
+    this.title = movie.title;
+    this.overview = movie.overview;
+    this.average_votes = movie.average_votes;
+    this.image_url = `https://image.tmdb.org/t/p/original/${movie.poster_path}`;
+    this.popularity = movie.popularity;
+    this.releaseDate = movie.release_on;
+}
 
 // Error handlers
 function handleError(err, req, res, next) {
