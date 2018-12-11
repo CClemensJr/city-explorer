@@ -63,7 +63,7 @@ function getMovies(req, res, next) {
     const _URL = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.MOVIE_DB_API_KEY}&language=en-US&query=${searchQuery}&include_adult=false&page=1`;
 
     return superagent.get(_URL)
-        .then(result => res.send(result.body.results.map(movie = new Movie(movie))))
+        .then(result => res.send(result.body.results.map(movie => new Movie(movie))))//console.log(result.body.results[0].title))
         .catch(error => handleError(error, req, res, next));
 }
 
@@ -91,12 +91,12 @@ function Yelp(restaurant) {
 }
 
 function Movie(movie) {
-    let title = movie.title;
-    let overview = movie.overview;
-    let average_votes = movie.average_votes;
-    let image = movie.image_url;
-    let popularity = movie.popularity;
-    let releaseDate = movie.release_on;
+    this.title = movie.title;
+    this.overview = movie.overview;
+    this.average_votes = movie.average_votes;
+    this.image_url = movie.image_url;
+    this.popularity = movie.popularity;
+    this.releaseDate = movie.release_on;
 }
 
 // Error handlers
