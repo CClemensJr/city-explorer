@@ -1,16 +1,16 @@
-DROP TABLE IF EXISTS locations, weathers, yelps, movies, meetups, trails
+DROP TABLE IF EXISTS locations, weathers, yelps, movies, meetups, trails;
 
 CREATE TABLE IF NOT EXISTS locations (
     id SERIAL PRIMARY KEY,
     search_query VARCHAR(255),
     formatted_query VARCHAR(255),
-    latitude NUMERIC(8. 6),
+    latitude NUMERIC(8, 6),
     longitude NUMERIC(9, 6)
 );
 
 CREATE TABLE IF NOT EXISTS weathers (
     id SERIAL PRIMARY KEY, 
-    forecast = VARCHAR(255),
+    forecast VARCHAR(255),
     time VARCHAR(255),
     created_at BIGINT,
     location_id INTEGER NOT NULL REFERENCES locations(id)
@@ -40,10 +40,12 @@ CREATE TABLE IF NOT EXISTS movies (
     location_id INTEGER NOT NULL REFERENCES locations(id)
 );
 
-/*CREATE TABLE IF NOT EXISTS meetups (
-
+CREATE TABLE IF NOT EXISTS meetups (
+    id SERIAL PRIMARY KEY,
+    location_id INTEGER NOT NULL REFERENCES locations(id)
 );
 
 CREATE TABLE IF NOT EXISTS trails (
-
-);*/
+    id SERIAL PRIMARY KEY,
+    location_id INTEGER NOT NULL REFERENCES locations(id)
+);

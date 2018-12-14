@@ -29,19 +29,83 @@ app.get('/movies', getMovies);
 
 
 
-// Helper Functions
+// Error handler
+function handleError(err, req, res, next) {
+    console.error('ERR', err)
+
+    if (res)
+    {
+        res.status(500).send('I\'m sorry, something unexpected happened');
+    }
+}
+
+
+
+// Listen for traffic
+app.listen(PORT, () => console.log(`App is running on PORT: ${PORT}`));
+
+
+
+// --------------------------------------- LOCATION ------------------------------------ //
+// Callback
 function getLocation(req, res, next) {
-    let query = req.query.data;
+    const locationHandler = {
+        query: req.query.data,
+
+        cacheHit: (results) => res.send(results.rows[0]),
+
+        cacheMiss: () => Location.fetchLocationData(req.query.data).then(data => res.send(data))
+    }
+
+    Location.lookUpLocationDB(locationHandler);
+}
+
+// Object Constructors and Prototypes
+function Location(query, data) {
+    this.search_query = query;
+    this.formatted_query = data.formatted_address;
+    this.latitude = data.geometry.location.lat;
+    this.longitude = data.geometry.location.lng;
+}
+
+Location.prototype.save = function() {
+    let SQL = `INSERT INTO locations (search_query, formatted_query, latitude, longitude) VALUES ($1, $2, $3, $4)`;
+    let values = Object.values(this);
+    client.query(SQL, values);
+}
+
+// Helper Functions
+Location.fetchLocationData = (query) => {
     const _URL = `https://maps.googleapis.com/maps/api/geocode/json?address=${query}&key=${process.env.LOCATION_API_KEY}`;
 
     return superagent.get(_URL)
         .then(data => {
-            if (!data.body.results.length) {throw new Error('No Data');}
-    
-            res.send(new Location(query, data.body.results[0]));
-        })
-        .catch(error => handleError(error, req, res, next));
+            if (!data.body.results.length) { throw 'No Data'; }
+            else {
+                let location = new Location(query, data.body.results[0]);
+
+                location.save;
+
+                return location;
+            }
+        });
 }
+
+Location.lookUpLocationDB = (handler) => {
+    const SQL = `SELECT * FROM locations WHERE search_query=$1`;
+    const values = [handler.query];
+
+    return client.query(SQL, values)
+        .then(results => {
+            if (results.rowCount > 0) {
+                handler.cacheHit(results);
+            } else {
+                handler.cacheMiss();
+            }
+        })
+        .catch(console.error);
+}
+
 
 function getWeather(req, res, next) {
     let latitude = req.query.data.latitude;
@@ -75,13 +139,6 @@ function getMovies(req, res, next) {
 
 
 
-// Object Constructors
-function Location(query, data) {
-    this.search_query = query;
-    this.formatted_query = data.formatted_address;
-    this.latitude = data.geometry.location.lat;
-    this.longitude = data.geometry.location.lng;
-}
 
 function Weather(day) {
     this.forecast = day.summary;
@@ -105,14 +162,10 @@ function Movie(movie) {
     this.releaseDate = movie.release_on;
 }
 
-// Error handlers
-function handleError(err, req, res, next) {
-    console.error('ERR', err)
 
-    if (res)
-    {
-        res.status(500).send('I\'m sorry, something unexpected happened');
-    }
-}
 
-app.listen(PORT, () => console.log(`App is running on PORT: ${PORT}`));
+
+
+
+
+
